@@ -1,0 +1,23 @@
+<root>
+	<game>
+		<level>
+			<pigs>
+				<bird amountBirds="3">
+					<radius>20</radius>
+					<friction>1</friction>
+					<density>10</density>
+					<position>
+						<x></x>
+						<y></y>
+					<position>
+				</bird>
+			</pigs>
+			<birds>
+				
+			</birds>				
+			<blocks>
+				
+			</blocks>
+		</level>
+	</game>
+</root>
