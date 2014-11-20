@@ -1,6 +1,7 @@
 package com.project.view.bird{
 	
 	import com.project.common.Constants;
+	import com.project.model.vo.VOBirdData;
 	import com.project.view.abstract.ViewAbstract;
 	
 	import flash.display.DisplayObject;
@@ -29,7 +30,7 @@ package com.project.view.bird{
 		//
 		//---------------------------------------------------------------------------------------------------------
 
-		private var _birdSize:Number=15;		
+		private var _birdSize:Number=0;		
 		private var _startX:Number = 0;
 		private var _startY:Number = 0;
 		private var _gravMass:Number=0;
@@ -43,7 +44,7 @@ package com.project.view.bird{
 		//---------------------------------------------------------------------------------------------------------
 		
 		public function ViewBird(){
-			_actorCreateBody();
+			//_actorCreateBody();
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -51,11 +52,30 @@ package com.project.view.bird{
 		//  PUBLIC & INTERNAL METHODS 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		public function set startPoint(pPoint:Point):void{
-			if (pPoint.x==body.position.x&&pPoint.y==body.position.y)return;
-			body.position=new Vec2(pPoint.x,pPoint.y)
-			_startX=pPoint.x;
-			_startY=pPoint.y;
+	    		
+		public function actorCreateBody(pVOBird:VOBirdData):void{	
+			_birdSize=pVOBird.radius;
+			_startX=pVOBird.position.x;
+			_startY=pVOBird.position.y;
+			
+			material=new Material(0,pVOBird.friction,2,pVOBird.density);
+			
+			shape=new Circle(_birdSize,null,material);			
+			
+			body=new Body(BodyType.DYNAMIC);
+			startPoint=pVOBird.position;	
+			body.shapes.add(shape);			
+
+			skin = new BirdSkin();	
+			skin.width=_birdSize*2;
+			skin.height=_birdSize*2;
+			skinSetUP();			
+			body.space=pVOBird.space;
+			
+			_gravMassUpdate();
+			
+			addEventListener(Event.ENTER_FRAME,_handlerUpdate);
+			addEventListener(MouseEvent.MOUSE_DOWN,_handlerBirdMoveStart);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -70,29 +90,7 @@ package com.project.view.bird{
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
-		private function _actorCreateBody():void{			
-			body=new Body(BodyType.DYNAMIC);
-			body.position.set(new Vec2(0, 0));		
-			
-			material=new Material(0,5,2,10);
-			shape=new Circle(_birdSize,null,material);			
-			body.shapes.add(shape);			
-
-			skin = new BirdSkin();	
-			skin.width=_birdSize*2;
-			skin.height=_birdSize*2;
-			body.userData.sprite=skin;			
-			body.userData.sprite.x=body.position.x;
-			body.userData.sprite.y=body.position.y;
-			body.userData.sprite.rotation=body.rotation*57.2957795;
-			addChild(skin);	
-			
-			_gravMassUpdate();
-			
-			addEventListener(Event.ENTER_FRAME,_handlerUpdate);
-			addEventListener(MouseEvent.MOUSE_DOWN,_handlerBirdMoveStart);
-		}
-		
+        /*		
 		private function _skinCreate():DisplayObject{
 			var pSprite:Sprite=new Sprite();
 			
@@ -105,7 +103,7 @@ package com.project.view.bird{
 			pSprite.graphics.endFill();
 			
 			return pSprite;
-		}
+		}*/
 		
 		private function _gravMassUpdate():void{
 			if(_gravMass==0){_gravMass=body.gravMass;}			
@@ -152,6 +150,7 @@ package com.project.view.bird{
 			}
 			if(_isFlying){
 				body.gravMass+=0.5;
+				
 				if(body.velocity.x>-.1&&body.velocity.x<.1 && body.velocity.y>-.1&&body.velocity.y<.1){
 					body.gravMass=0;
 					_gravMassUpdate();
@@ -173,8 +172,7 @@ package com.project.view.bird{
 			var pDistance:Number=Math.sqrt(pDistanceX*pDistanceX+pDistanceY*pDistanceY);
 			var pCubeAngle:Number=Math.atan2(pDistanceY,pDistanceX);			
 			var pPowerX:Number =  -pDistance*Math.cos(pCubeAngle)*(Constants.GRAVITY*.45);
-			var pPowerY:Number =  -pDistance*Math.sin(pCubeAngle)*(Constants.GRAVITY*.45);
-			
+			var pPowerY:Number =  -pDistance*Math.sin(pCubeAngle)*(Constants.GRAVITY*.45);			
 		
 			body.applyImpulse( new Vec2(pPowerX,pPowerY));		
 		}

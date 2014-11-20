@@ -1,7 +1,8 @@
 package com.project.view.main{
 	import com.project.common.Constants;
+	import com.project.model.vo.VOBirdData;
 	import com.project.model.vo.VOBlockData;
-	import com.project.view.abstract.EventViewAbstract;
+	import com.project.model.vo.VOPigData;
 	import com.project.view.abstract.ViewAbstract;
 	import com.project.view.bird.ViewBird;
 	import com.project.view.block.EventViewBlocks;
@@ -11,9 +12,7 @@ package com.project.view.main{
 	import com.project.view.pig.ViewPig;
 	
 	import flash.events.Event;
-	import flash.geom.Point;
 	
-	import nape.callbacks.BodyListener;
 	import nape.callbacks.CbEvent;
 	import nape.callbacks.CbType;
 	import nape.callbacks.InteractionCallback;
@@ -52,6 +51,8 @@ package com.project.view.main{
 		private var _cbTypeActor:CbType;
 		private var _cbTypePig:CbType;
 		private var _cbTypeFloor:CbType;
+		private var _birdIterator:int=0;
+		private var _birdAmount:int=0;
 		
 		//---------------------------------------------------------------- 
 		//
@@ -83,17 +84,26 @@ package com.project.view.main{
 		//---------------------------------------------------------------------------------------------------------
 		public function mapCreate(pArrayBlokcsData:Array):void{
 			var pArrayLength:int=pArrayBlokcsData.length;
+			
 			for(var i:int=0;i<pArrayLength;i++){
-				//dispatchEvent(new EventViewMain(EventViewMain.NEW_BLOCK_CREATE));
-				var pBlocks:ViewBlock=new ViewBlock();
-				pBlocks.createObject(VOBlockData(pArrayBlokcsData[i]));
-				pBlocks.body.space=_space;
-				pBlocks.body.cbTypes.add(_cbTypeBlock);
-				pBlocks.addEventListener(EventViewBlocks.REMOVE_BLOCK,_handlerBlocsRemove);
-				addChild(pBlocks);
-				trace(pBlocks.y,pBlocks.body.position.y);
+				_blockCreate(pArrayBlokcsData[i]);				
+			}			
+		}
+		public function pigsCreate(pArrayBlokcsData:Array):void{
+			var pArrayLength:int=pArrayBlokcsData.length;
+			
+			for(var i:int=0;i<pArrayLength;i++){
+				_pigCreate(pArrayBlokcsData[i]);				
+			}			
+		}
+		public function birdsCreate(pArrayBlokcsData:Array):void{
+			if(_birdAmount==0){
+				_birdAmount=pArrayBlokcsData.length;
 			}
 			
+			_actorCreate(pArrayBlokcsData[_birdIterator]);				
+			_birdIterator++;
+		
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -111,13 +121,10 @@ package com.project.view.main{
 		//---------------------------------------------------------------------------------------------------------
 		private function _initialize():void{
 			
-			_nape2dWorld.space.gravity.setxy(0, _gravity);
-			
+			_nape2dWorld.space.gravity.setxy(0, _gravity);			
 			_createWalls();
-			_createActor();
-			//_createBlocks();
 			
-			addEventListener(Event.ENTER_FRAME, _update);
+			addEventListener(Event.ENTER_FRAME, _handlerWorldUpdate);
 		}
 		
 		private function _cbTypeCreate():void{
@@ -162,86 +169,37 @@ package com.project.view.main{
 			rightWall.space = _space;
 		}
 		
-		private function _createActor():void	{
+		private function _actorCreate(pVOBirdData:VOBirdData):void	{
+			pVOBirdData.space=_space;
 			
 			_actor=new ViewBird();
-			_actor.startPoint=new Point(Constants.BEGIN_BIRD_POSITION_X,Constants.BEGIN_BIRD_POSITION_Y)
+			_actor.actorCreateBody(pVOBirdData);
 			addChild(_actor);
 			
 			_bird=_actor.body;
 			_bird.cbTypes.add(_cbTypeActor);
-			_bird.space = _space; 
 		}
 		
-		/*private var _map:Array=[[1,1,1,1,1],
-								[1,5,6,5,1],
-								[1,0,3,0,1],
-								[4,2,0,2,4],
-								[0,0,4,0,0]];
-		
-				
-		private function _createBlocks():void{
-			var pPosX:Number=0;
-			var pPosY:Number=0;
+		private function _blockCreate(pVOBlockData:VOBlockData):void	{
+			pVOBlockData.space=_space;
 			
-			for (var i:int=0;i<5;i++){
-				for(var j:int=0;j<5;j++){
-					pPosX=700+50*j;
-					
-					if(_map[i][j]==0)continue;
-					if(_map[i][j]==4){
-						var pPig:ViewPig=new ViewPig();
-						pPosY=Constants.APPLICATION_HEIGHT-50*(i+1);
-						pPig.pigCreate(25);
-						pPig.body.position=new Vec2(pPosX,pPosY);
-						pPig.body.space=_space;
-						pPig.body.cbTypes.add(_cbTypePig);
-						pPig.addEventListener(EventViewPig.REMOVE_PIG,_handlerPigRemove);						
-						addChild(pPig);
-						continue;
-					}
-					var pBlocks:ViewBlock=new ViewBlock();
-					
-					
-					if(_map[i][j]==1){		
-						pPosY=Constants.APPLICATION_HEIGHT-25*(i+1);
-						pBlocks.blockCreate(50,50);
-						pBlocks.body.position=new Vec2(pPosX,pPosY);
-						
-					}
-					if(_map[i][j]==6){		
-						pPosY=Constants.APPLICATION_HEIGHT-25*(i+1);
-						pBlocks.blockCreate(50,50,"stone");
-						pBlocks.body.position=new Vec2(pPosX,pPosY);
-						
-					}
-					
-					if(_map[i][j]==2){
-						pPosY=Constants.APPLICATION_HEIGHT-45*(i+1);
-						pBlocks.blockCreate(25,100);
-						pBlocks.body.position=new Vec2(pPosX,pPosY);
-					}
-					
-					if(_map[i][j]==5){
-						pPosY=Constants.APPLICATION_HEIGHT-45*(i+1);
-						pBlocks.blockCreate(25,100,"stone");
-						pBlocks.body.position=new Vec2(pPosX,pPosY);
-					}
-					
-					if(_map[i][j]==3){
-						pPosY=Constants.APPLICATION_HEIGHT-112.5*(i);
-						pBlocks.blockCreate(200,25);						
-						pBlocks.body.position=new Vec2(pPosX,pPosY);							
-					}
-					
-					pBlocks.body.space=_space;
-					pBlocks.body.cbTypes.add(_cbTypeBlock);
-					pBlocks.addEventListener(EventViewBlocks.REMOVE_BLOCK,_handlerBlocsRemove);
-					
-					addChild(pBlocks);			
-				}			
-			}
-		}*/
+			var pBlock:ViewBlock=new ViewBlock();				
+			pBlock.createObject(VOBlockData(pVOBlockData));
+			pBlock.body.cbTypes.add(_cbTypeBlock);			
+			pBlock.addEventListener(EventViewBlocks.REMOVE_BLOCK,_handlerBlockRemove);
+			addChild(pBlock);
+		}
+		
+		private function _pigCreate(pVOPigData:VOPigData):void	{
+			pVOPigData.space=_space;
+			
+			var pPig:ViewPig=new ViewPig();				
+			pPig.pigBodyCreate(VOPigData(pVOPigData));
+			pPig.body.cbTypes.add(_cbTypeBlock);			
+			pPig.addEventListener(EventViewPig.REMOVE_PIG,_handlerPigRemove);
+			addChild(pPig);
+		}
+		
 		
 		private function _damagParseAndCalculate(pPhysObject:Object):Number{
 			var pXDamage:Number = pPhysObject.x;
@@ -258,8 +216,8 @@ package com.project.view.main{
 		//  EVENT HANDLERS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		private function _handlerBlocsRemove(event:EventViewBlocks):void{
-			event.currentTarget.removeEventListener(EventViewBlocks.REMOVE_BLOCK,_handlerBlocsRemove);
+		private function _handlerBlockRemove(event:EventViewBlocks):void{
+			event.currentTarget.removeEventListener(EventViewBlocks.REMOVE_BLOCK,_handlerBlockRemove);
 			removeChild(ViewBlock(event.currentTarget));
 		}
 		
@@ -269,7 +227,7 @@ package com.project.view.main{
 		}
 		
 				
-		private function _update(event:Event):void{
+		private function _handlerWorldUpdate(event:Event):void{
 			var pPosX:Number=_bird.position.x;
 			pPosX=stage.stageWidth/2-pPosX;
 			if (pPosX>0) {
@@ -284,10 +242,10 @@ package com.project.view.main{
 			var pBodiesLength:int=pBodies.length;
 			for (var i:int = 0; i < pBodiesLength; i++) {
 				var pBody:Body=pBodies.at(i);
-				if(pBody.userData.sprite!=null){
-					pBody.userData.sprite.x=pBody.position.x
-					pBody.userData.sprite.y=pBody.position.y
-					pBody.userData.sprite.rotation=pBody.rotation*57.2957795;
+				if(pBody.userData.skin!=null){
+					pBody.userData.skin.x=pBody.position.x
+					pBody.userData.skin.y=pBody.position.y
+					pBody.userData.skin.rotation=pBody.rotation*57.2957795;
 				}
 			}
 			

@@ -1,5 +1,6 @@
 package com.project.view.pig{
 	
+	import com.project.model.vo.VOPigData;
 	import com.project.view.abstract.ViewAbstract;
 	
 	import flash.display.DisplayObject;
@@ -25,7 +26,7 @@ package com.project.view.pig{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		private var _damage:Number;
-		private var _damageMax:Number=500;
+		private var _health:Number=0;
 		private var _pigRadius:Number;
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -61,55 +62,44 @@ package com.project.view.pig{
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
-		public function pigCreate(pSize:Number):void{
-			_pigRadius=pSize;
+		public function pigBodyCreate(pVOPig:VOPigData):void{
+			_pigRadius=pVOPig.radius;	
+			_health=pVOPig.health;
 			
-		
+			material=new Material(0,pVOPig.friction,2,pVOPig.density);
 			
-			body = new Body(BodyType.DYNAMIC, new Vec2(0,0));
-			
-			material=new Material(0,2,2,10);
 			shape=new Circle(_pigRadius,null,material);
+			
+			body = new Body(BodyType.DYNAMIC);
+			startPoint=pVOPig.position;
 			body.shapes.add(shape);
 			
 			skin=new PigSkin();
 			skin.width=_pigRadius*2;
 			skin.height=_pigRadius*2;
-			body.userData.sprite=skin;			
-			body.userData.sprite.x=body.position.x
-			body.userData.sprite.y=body.position.y
-			body.userData.sprite.rotation=body.rotation*57.2957795;
+			skinSetUP();
 			addChild(skin);
-			
+			body.space=pVOPig.space;
 			body.userData.damage=setDamage;
 			
 		}
 		
 		private function setDamage(pDamage:Number):void{
-			_damageMax-=pDamage;
-			if(_damageMax<=0){
-				_clear();				
+			_health-=pDamage;
+			if(_health<=0){
+				clear();				
+				dispatchEvent(new EventViewPig(EventViewPig.REMOVE_PIG));
 			}
 		}
 		
 		
-		private function _clear():void{
-			body.space=null;
-			
-			if(skin is Sprite){
-				Sprite(skin).graphics.clear();
-			}
-			skin=null;
-			dispatchEvent(new EventViewPig(EventViewPig.REMOVE_PIG));
-		}
-		
-		private function _skinCreate():DisplayObject{
+		/*private function _skinCreate():DisplayObject{
 			var pSprite:Sprite=new Sprite();
 			pSprite.graphics.beginFill(0x00ff00);
 			pSprite.graphics.drawCircle(0,0,_pigRadius);
 			pSprite.graphics.endFill();
 			return pSprite;
-		}
+		}*/
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 

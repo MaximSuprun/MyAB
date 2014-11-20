@@ -26,7 +26,7 @@ package com.project.view.block{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		private var _damage:Number;
-		private var _damageMax:Number=1000;
+		private var _health:Number=1000;
 		private var _height:Number;
 		private var _width:Number;
 		
@@ -60,56 +60,18 @@ package com.project.view.block{
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
-/*		public function blockCreate(pWidth:Number,pHeight:Number,pMaterial:String="wood"):void{
-			_width=pWidth;
-			_height=pHeight;			
-			
-			body = new Body(BodyType.DYNAMIC, new Vec2(0,0));		
-			if(pMaterial=="wood"){
-				material=new Material(0,2,2,10);
-				if(pHeight==pWidth){
-					skin=new BoxSkin();
-				}else{					
-					skin=new PlankSkin();
-					if(pWidth>pHeight){
-						skin.rotation=180;
-					}
-				}
-			}else{
-				_damageMax=2500;
-				material=new Material(0,1.5,2,15);
-				if(pHeight==pWidth){
-					skin=new StoneSkin();
-				}else{
-					skin=new StonePlankSkin();
-					if(pWidth>pHeight){
-						skin.rotation=180;
-					}
-				}
-			}
-			
-			shape=new Polygon(Polygon.box(pWidth,pHeight),material);
-			body.shapes.add(shape);		
-			body.userData.damage=setDamage;
-			
-			//skin=_skinCreate();
-			skin.width=pWidth;
-			skin.height=pHeight;
-			body.userData.sprite=skin;			
-			body.userData.sprite.x=body.position.x
-			body.userData.sprite.y=body.position.y
-			body.userData.sprite.rotation=body.rotation*57.2957795;
-			addChild(skin);
-			
-		}*/
 		public function createObject(pVOBlock:VOBlockData):void{			
-			_damageMax=pVOBlock.health;
+			_health=pVOBlock.health;
 			
-			body = new Body(BodyType.DYNAMIC, new Vec2(pVOBlock.position.x,pVOBlock.position.y));
-			material=new Material(0,pVOBlock.friction,2,pVOBlock.density);
+			
+			material=new Material(0,pVOBlock.friction,2,pVOBlock.density);			
 			shape=new Polygon(Polygon.box(pVOBlock.width,pVOBlock.height),material);
+			
+			body = new Body(BodyType.DYNAMIC);
+			startPoint=pVOBlock.position;
 			body.shapes.add(shape);		
 			body.userData.damage=setDamage;
+			
 			switch (pVOBlock.skin){
 				case VOBlockData.STONE:
 					skin=new StoneSkin();
@@ -123,35 +85,26 @@ package com.project.view.block{
 				case VOBlockData.WOOD_PLANK:
 					skin=new PlankSkin();														
 					break;
-			}		
+			}	
+			
 			if (pVOBlock.width>pVOBlock.height){
 				skin.rotation=180;
 			}
+			
 			skin.width=pVOBlock.width;
 			skin.height=pVOBlock.height;
-			body.userData.sprite=skin;			
-			body.userData.sprite.x=body.position.x
-			body.userData.sprite.y=body.position.y
-			body.userData.sprite.rotation=body.rotation*57.2957795;
+			skinSetUP();
 			addChild(skin);
+			
+			body.space=pVOBlock.space;
 		}
 
 		private function setDamage(pDamage:Number):void{
-			_damageMax-=pDamage;
-			if(_damageMax<=0){
-				_clear();				
+			_health-=pDamage;
+			if(_health<=0){
+				clear();	
+				dispatchEvent(new EventViewBlocks(EventViewBlocks.REMOVE_BLOCK));
 			}
-		}
-		
-		
-		private function _clear():void{
-			body.space=null;
-			
-			if(skin is Sprite){
-				Sprite(skin).graphics.clear();
-			}
-			skin=null;
-			dispatchEvent(new EventViewBlocks(EventViewBlocks.REMOVE_BLOCK));
 		}
 		
 		private function _skinCreate():DisplayObject{

@@ -1,26 +1,21 @@
-package com.project.view.pig{
+package{
+	import com.project.view.ViewProject;
 	
-	import com.project.view.abstract.MediatorViewAbstract;
+	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.events.Event;
 	
-	public class MediatorViewPig extends MediatorViewAbstract{
+	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
+	
+	public class Main extends Sprite{
+		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		override public function onRegister():void {
-			super.onRegister();
-			
-			//requestfullfild
-			
-			
-		}
 		
-		
-		override public function onRemove():void {
-			super.onRemove();
-			
-		}	
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -28,6 +23,7 @@ package com.project.view.pig{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
+		private var _viewProject:ViewProject;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -35,9 +31,11 @@ package com.project.view.pig{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function MediatorViewPig()
-		{
-			super();
+		public function Main(){
+			stage.align = StageAlign.TOP_LEFT;
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			
+			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -52,9 +50,7 @@ package com.project.view.pig{
 		//  GETTERS & SETTERS   
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		private function get _view():ViewPig {
-			return ViewPig(viewComponent); 
-		}
+		
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -62,6 +58,10 @@ package com.project.view.pig{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
+		private function _initialize():void{
+			_viewProject = new ViewProject();
+			addChild(_viewProject);
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -69,6 +69,11 @@ package com.project.view.pig{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		private function _handlerAddedToStage(event:Event):void{
+			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
+			
+			_initialize();
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -82,8 +87,6 @@ package com.project.view.pig{
 		//  END CLASS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
-		
 		
 	}
 }

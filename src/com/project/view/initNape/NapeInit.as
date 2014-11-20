@@ -22,12 +22,12 @@ package com.project.view.initNape{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		private var _space:Space;
-		private var _timeStep:Number = 1/30;
-		private var _velocityIterations:int = 10;
-		private var _positionIterations:int = 10;
+		private var _timeStep:Number = 0;
+		private var _velocityIterations:int = 0;
+		private var _positionIterations:int = 0;
 		
-		private var _appWidth:int = 800;
-		private var _appHeight:int = 600;
+		private var _appWidth:int = 0;
+		private var _appHeight:int = 0;
 		
 		private var _debug:BitmapDebug;
 		

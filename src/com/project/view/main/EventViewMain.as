@@ -8,7 +8,6 @@ package com.project.view.main{
 		//  PUBLIC & INTERNAL VARIABLES 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		public static const NEW_BLOCK_CREATE:String="NEW_BLOCK_CREATE";
 		public static const LOAD_MAP_DATA:String="LOAD_MAP_DATA";
 		
 		//--------------------------------------------------------------------------------------------------------- 

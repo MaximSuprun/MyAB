@@ -11,7 +11,7 @@ package com.project.common{
 		public static const MAX_BIRD_DISTANCE:Number = 65;	
 		public static const BEGIN_BIRD_POSITION_X:Number = 200;
 		public static const BEGIN_BIRD_POSITION_Y:Number = APPLICATION_HEIGHT-100;
-		public static const BEGIN_BUILDINGS_POSITION_Y:Number = 750;
+		public static const BEGIN_BUILDINGS_POSITION_Y:Number = 350;
 		
 	}
 }

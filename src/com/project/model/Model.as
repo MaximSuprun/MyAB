@@ -87,29 +87,31 @@ package com.project.model{
 			var pVOBlockData:VOBlockData;
 			var pVOPigData:VOPigData;
 			
-			_map=[[1,2,2,2,1],
-				  [0,0,0,0,0],
-				  [0,0,0,0,0],
-				  [0,0,0,0,0]];
+			_map=[[1,2,1,2,1],
+				  [1,2,1,2,1],
+				  [7,5,2,5,7],
+				  [0,0,4,0,0],
+				  [0,0,7,0,0]];
 			
-			var pMapLength:int=_map.length;
+			var pRowLength:int=_map.length;
 			
-			for (var i:int=0;i<pMapLength;i++){				
-				for(var j:int=0;j<pMapLength;j++){					
+			for (var i:int=0;i<pRowLength;i++){	
+				var pColumnLength:int=_map[i].length;
+				for(var j:int=0;j<pColumnLength;j++){					
 					if(_map[i][j]==0)continue;
-					pPosX=Constants.BEGIN_BUILDINGS_POSITION_Y+j*50;
+					pPosX=Constants.BEGIN_BUILDINGS_POSITION_Y+j*_cellSize;
 					
 					if (_map[i][j]==7){
 						pVOPigData=new VOPigData();
 						pVOPigData.friction=3;
 						pVOPigData.density=2;
-						pVOPigData.health=750;
+						pVOPigData.health=500;
 						pVOPigData.radius=20;
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i+pVOPigData.radius;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY-=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY+=_cellSize}
+						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOPigData.radius;
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize/2}
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY+=_cellSize}
 						pVOPigData.position=new Point(pPosX,pPosY);
-						_pigDataContainer.push(pVOPigData);
+						arrayVOPigData.push(pVOPigData);
 						continue;
 					}
 					
@@ -120,11 +122,11 @@ package com.project.model{
 						pVOBlockData.height=_cellSize;
 						pVOBlockData.friction=3;
 						pVOBlockData.density=10;
-						pVOBlockData.health=2500;
+						pVOBlockData.health=2000;
 						pVOBlockData.skin="wood";
 						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
+						if((i>=1&&j>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
 						pVOBlockData.position=new Point(pPosX,pPosY)						
 					}
 					if(_map[i][j]==2){
@@ -134,11 +136,13 @@ package com.project.model{
 						pVOBlockData.height=_cellSize;
 						pVOBlockData.friction=3;
 						pVOBlockData.density=15;
-						pVOBlockData.health=3000;
+						pVOBlockData.health=2500;
 						pVOBlockData.skin="stone";
 						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
+						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize
+						
+						}
 						pVOBlockData.position=new Point(pPosX,pPosY)
 						
 					}
@@ -149,11 +153,11 @@ package com.project.model{
 						pVOBlockData.height=_cellSize/2;
 						pVOBlockData.friction=3;
 						pVOBlockData.density=10;
-						pVOBlockData.health=2500;
+						pVOBlockData.health=1500;
 						pVOBlockData.skin="wood_plank";
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
+						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height;
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
+						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
 						pVOBlockData.position=new Point(pPosX,pPosY)
 						
 					}
@@ -164,11 +168,11 @@ package com.project.model{
 						pVOBlockData.height=_cellSize/2;
 						pVOBlockData.friction=3;
 						pVOBlockData.density=15;
-						pVOBlockData.health=3000;
+						pVOBlockData.health=2000;
 						pVOBlockData.skin="stone_plank";
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
+						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height;
+						if((i>=1&&j>=1&&j<=pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
+						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
 						pVOBlockData.position=new Point(pPosX,pPosY)
 						
 					}
@@ -180,12 +184,17 @@ package com.project.model{
 						pVOBlockData.height=_cellSize*2;
 						pVOBlockData.friction=3;
 						pVOBlockData.density=10;
-						pVOBlockData.health=2500;
+						pVOBlockData.health=1500;
 						pVOBlockData.skin="wood_plank";
-						pPosX+=pVOBlockData.height/2;
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-_cellSize;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
+					/*	if(j>pColumnLength/2){
+						 pPosX-=pVOBlockData.width/2;							
+						}
+						if(j<pColumnLength/2){
+							pPosX+=pVOBlockData.width/2;							
+						}*/
+						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/1.5;
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
+						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize*2}
 						pVOBlockData.position=new Point(pPosX,pPosY);				
 					}	
 					
@@ -196,22 +205,28 @@ package com.project.model{
 						pVOBlockData.height=_cellSize*2;
 						pVOBlockData.friction=3;
 						pVOBlockData.density=15;
-						pVOBlockData.health=3000;
+						pVOBlockData.health=2000;
 						pVOBlockData.skin="stone_plank";
-						pPosX+=pVOBlockData.height/2;
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-_cellSize;
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1&&j<=pMapLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
+						if(j>pColumnLength/2){
+							pPosX-=pVOBlockData.width/2;							
+						}
+						if(j<pColumnLength/2){
+							pPosX+=pVOBlockData.width/2;							
+						}
+						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
+						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
+						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
 						pVOBlockData.position=new Point(pPosX,pPosY);				
 					}		
 					
-					_blocksDataContainer.push(pVOBlockData);
-					//pVOBlockData=null;
+					arrayVOBlockData.push(pVOBlockData);
+					pVOBlockData=null;
 					
 				}
 			}
-			dispatch(new EventModel(EventModel.MAP_LOADED,_blocksDataContainer));
-			//_birdDataLoaded();
+			dispatch(new EventModel(EventModel.MAP_LOADED,arrayVOBlockData));
+			dispatch(new EventModel(EventModel.PIGS_LOADED,arrayVOPigData));
+			_birdDataLoaded();
 		}
 		
 		private function _birdDataLoaded():void{
@@ -220,7 +235,11 @@ package com.project.model{
 				pVOBirdData=new VOBirdData();
 				pVOBirdData.friction=5;
 				pVOBirdData.density=15;
+				pVOBirdData.radius=15;
+				pVOBirdData.position=new Point(Constants.BEGIN_BIRD_POSITION_X,Constants.BEGIN_BIRD_POSITION_Y);
+				arrayVOBirdData.push(pVOBirdData);
 			}
+			dispatch(new EventModel(EventModel.BIRDS_LOADED,arrayVOBirdData));
 		}
 		//--------------------------------------------------------------------------------------------------------- 
 		// 

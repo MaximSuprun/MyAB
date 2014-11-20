@@ -4,10 +4,9 @@ package com.project.model{
 	public class EventModel extends Event {
 		
 		public static const MAP_LOADED:String = "MAP_LOADED";
-		//public static const SET_:String = "SET_";
-		
-		
-		
+		public static const PIGS_LOADED:String = "PIGS_LOADED";
+		public static const BIRDS_LOADED:String = "BIRDS_LOADED";
+			
 		private var _payload:Object;
 		public function get payload():Object {
 			return _payload;
