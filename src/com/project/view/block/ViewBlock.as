@@ -91,8 +91,8 @@ package com.project.view.block{
 				skin.rotation=180;
 			}
 			
-			skin.width=pVOBlock.width;
-			skin.height=pVOBlock.height;
+			skin.width=pVOBlock.width/2;
+			skin.height=pVOBlock.height/2;
 			skinSetUP();
 			addChild(skin);
 			

@@ -97,136 +97,109 @@ package com.project.model{
 			
 			for (var i:int=0;i<pRowLength;i++){	
 				var pColumnLength:int=_map[i].length;
-				for(var j:int=0;j<pColumnLength;j++){					
+				for(var j:int=0;j<pColumnLength;j++){	
+					var pTempDataArray:Object={};
 					if(_map[i][j]==0)continue;
+					
 					pPosX=Constants.BEGIN_BUILDINGS_POSITION_Y+j*_cellSize;
+					pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT;	
 					
-					if (_map[i][j]==7){
-						pVOPigData=new VOPigData();
-						pVOPigData.friction=3;
-						pVOPigData.density=2;
-						pVOPigData.health=500;
-						pVOPigData.radius=20;
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOPigData.radius;
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize/2}
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY+=_cellSize}
-						pVOPigData.position=new Point(pPosX,pPosY);
-						arrayVOPigData.push(pVOPigData);
-						continue;
+					switch (_map[i][j]){
+						case 7:
+							pVOPigData=new VOPigData();
+							pVOPigData.friction=3;
+							pVOPigData.density=2;
+							pVOPigData.health=500;
+							pVOPigData.radius=20;
+							if((i>=1)){
+								if(_map[i-1][j]!=0){
+									pPosY=_map[i-1][j].y-_map[i-1][j].height/2-pVOPigData.radius;
+								}
+							}else{
+								pPosY-=pVOPigData.radius;
+							}
+							
+							pVOPigData.position=new Point(pPosX,pPosY);
+							arrayVOPigData.push(pVOPigData);
+							
+							pTempDataArray.y=pPosY;
+							pTempDataArray.height=pVOPigData.radius*2;
+							_map[i][j]=pTempDataArray;						
+							continue;
+							break;
+						case 1:
+							pVOBlockData = createBodyBlock(_cellSize,_cellSize,3,10,1500,Constants.WOOD);
+							break;
+						case 2:
+							pVOBlockData = createBodyBlock(_cellSize,_cellSize,3,15,1750,Constants.STONE);
+							break;
+						case 3:
+							pVOBlockData = createBodyBlock(_cellSize*3,_cellSize/2,3,10,1000,Constants.WOOD_PLANK);
+							break;
+						case 4:
+							pVOBlockData = createBodyBlock(_cellSize*3,_cellSize/2,3,15,1250,Constants.STONE_PLANK);
+							break;
+						case 5:
+							pVOBlockData = createBodyBlock(_cellSize/3,_cellSize*2,3,10,1000,Constants.WOOD_PLANK);	
+							break;
+						case 6:
+							pVOBlockData = createBodyBlock(_cellSize/2,_cellSize*2,3,15,1250,Constants.STONE_PLANK);
+							break;
 					}
 					
-					if(_map[i][j]==1){
+					if(pVOBlockData==null)continue;
+					
+					if((i>=1)){
 						
-						pVOBlockData = new VOBlockData();
-						pVOBlockData.width=_cellSize;
-						pVOBlockData.height=_cellSize;
-						pVOBlockData.friction=3;
-						pVOBlockData.density=10;
-						pVOBlockData.health=2000;
-						pVOBlockData.skin="wood";
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1&&j>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
-						pVOBlockData.position=new Point(pPosX,pPosY)						
-					}
-					if(_map[i][j]==2){
-						
-						pVOBlockData = new VOBlockData();
-						pVOBlockData.width=_cellSize;
-						pVOBlockData.height=_cellSize;
-						pVOBlockData.friction=3;
-						pVOBlockData.density=15;
-						pVOBlockData.health=2500;
-						pVOBlockData.skin="stone";
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize
-						
+					    if(_map[i-1][j]!=0){
+							pPosY=_map[i-1][j].y-_map[i-1][j].height/2-pVOBlockData.height/2;
 						}
-						pVOBlockData.position=new Point(pPosX,pPosY)
-						
-					}
-					if(_map[i][j]==3){
-						
-						pVOBlockData = new VOBlockData();
-						pVOBlockData.width=_cellSize*3;
-						pVOBlockData.height=_cellSize/2;
-						pVOBlockData.friction=3;
-						pVOBlockData.density=10;
-						pVOBlockData.health=1500;
-						pVOBlockData.skin="wood_plank";
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height;
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
-						pVOBlockData.position=new Point(pPosX,pPosY)
-						
-					}
-					if(_map[i][j]==4){
-						
-						pVOBlockData = new VOBlockData();
-						pVOBlockData.width=_cellSize*3;
-						pVOBlockData.height=_cellSize/2;
-						pVOBlockData.friction=3;
-						pVOBlockData.density=15;
-						pVOBlockData.health=2000;
-						pVOBlockData.skin="stone_plank";
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height;
-						if((i>=1&&j>=1&&j<=pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
-						pVOBlockData.position=new Point(pPosX,pPosY)
-						
+					
+						if(_map[i][j]==3||_map[i][j]==4){
+							if(j-1>=0 && j+1<pRowLength){
+								if(_map[i-1][j-1].height>_cellSize||_map[i-1][j+1].height>_cellSize){								
+									pPosY-=_cellSize;
+								}
+							}
+						}
+					}else{
+						pPosY-=pVOBlockData.height/2;
 					}
 					
-					if(_map[i][j]==5){
-						
-					    pVOBlockData = new VOBlockData();
-						pVOBlockData.width=_cellSize/2;
-						pVOBlockData.height=_cellSize*2;
-						pVOBlockData.friction=3;
-						pVOBlockData.density=10;
-						pVOBlockData.health=1500;
-						pVOBlockData.skin="wood_plank";
-					/*	if(j>pColumnLength/2){
-						 pPosX-=pVOBlockData.width/2;							
-						}
-						if(j<pColumnLength/2){
-							pPosX+=pVOBlockData.width/2;							
-						}*/
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/1.5;
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize*2}
-						pVOBlockData.position=new Point(pPosX,pPosY);				
-					}	
+					pTempDataArray.y=pPosY;
+					pTempDataArray.height=pVOBlockData.height;	
 					
-					if(_map[i][j]==6){
-						
-						pVOBlockData = new VOBlockData();
-						pVOBlockData.width=_cellSize/2;
-						pVOBlockData.height=_cellSize*2;
-						pVOBlockData.friction=3;
-						pVOBlockData.density=15;
-						pVOBlockData.health=2000;
-						pVOBlockData.skin="stone_plank";
-						if(j>pColumnLength/2){
-							pPosX-=pVOBlockData.width/2;							
+					if(_map[i][j]==3||_map[i][j]==4){
+						if(j-1>=0 && j+1<pRowLength){
+							_map[i][j-1]=pTempDataArray;
+							_map[i][j+1]=pTempDataArray;
 						}
-						if(j<pColumnLength/2){
-							pPosX+=pVOBlockData.width/2;							
-						}
-						pPosY=Constants.APPLICATION_HEIGHT-Constants.GROUND_HEIGHT-_cellSize*i-pVOBlockData.height/2;
-						if((i>=1&&j>=1&&j<pColumnLength)&&(_map[i-1][j]==3||_map[i-1][j-1]==3||_map[i-1][j+1]==3||_map[i-1][j]==4||_map[i-1][j-1]==4||_map[i-1][j+1]==4)){pPosY+=_cellSize;}
-						if((i>=1)&&(_map[i-1][j]==5||_map[i-1][j]==6)){pPosY-=_cellSize}
-						pVOBlockData.position=new Point(pPosX,pPosY);				
-					}		
+					}
 					
+					_map[i][j]=pTempDataArray;
+					pVOBlockData.position=new Point(pPosX,pPosY);					
 					arrayVOBlockData.push(pVOBlockData);
-					pVOBlockData=null;
 					
+					pVOBlockData=null;	
 				}
 			}
 			dispatch(new EventModel(EventModel.MAP_LOADED,arrayVOBlockData));
 			dispatch(new EventModel(EventModel.PIGS_LOADED,arrayVOPigData));
 			_birdDataLoaded();
+		}
+		
+		private function createBodyBlock(pWidth:Number,pHeight:Number,pFriction:Number,pDensity:Number,pHealth:Number,pSkin:String):VOBlockData{			
+			var pVOBlockData:VOBlockData;
+			
+			pVOBlockData = new VOBlockData();
+			pVOBlockData.width=pWidth;
+			pVOBlockData.height=pHeight;
+			pVOBlockData.friction=pFriction;
+			pVOBlockData.density=pDensity;
+			pVOBlockData.health=pHealth;
+			pVOBlockData.skin=pSkin;	
+			
+			return 	pVOBlockData;	
 		}
 		
 		private function _birdDataLoaded():void{

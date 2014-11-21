@@ -1,4 +1,5 @@
 package com.project.view.main{
+	import com.greensock.TweenLite;
 	import com.project.common.Constants;
 	import com.project.model.vo.VOBirdData;
 	import com.project.model.vo.VOBlockData;
@@ -12,6 +13,7 @@ package com.project.view.main{
 	import com.project.view.pig.ViewPig;
 	
 	import flash.events.Event;
+	import flash.utils.setTimeout;
 	
 	import nape.callbacks.CbEvent;
 	import nape.callbacks.CbType;
@@ -65,16 +67,15 @@ package com.project.view.main{
 			_nape2dWorld = new NapeInit(Constants.APPLICATION_WIDTH, Constants.APPLICATION_HEIGHT, Constants.APPLICATION_FRAME_RATE,10);
 			addChild(_nape2dWorld);
 			_space=_nape2dWorld.space;
+			_space.worldLinearDrag=0.25;
 			
 			_hand=new PivotJoint(_nape2dWorld.space.world,null,Vec2.weak(),Vec2.weak());
 			_hand.stiff=false;
 			_hand.space=_nape2dWorld.space;
 			_hand.active=false;
 			_cbTypeCreate();
-			_cbListenerCreate();
-			
-			_initialize();
-			
+			setTimeout(_cbListenerCreate,1000);
+			_initialize();			
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -94,7 +95,8 @@ package com.project.view.main{
 			
 			for(var i:int=0;i<pArrayLength;i++){
 				_pigCreate(pArrayBlokcsData[i]);				
-			}			
+			}	
+			
 		}
 		public function birdsCreate(pArrayBlokcsData:Array):void{
 			if(_birdAmount==0){
@@ -195,7 +197,7 @@ package com.project.view.main{
 			
 			var pPig:ViewPig=new ViewPig();				
 			pPig.pigBodyCreate(VOPigData(pVOPigData));
-			pPig.body.cbTypes.add(_cbTypeBlock);			
+			pPig.body.cbTypes.add(_cbTypePig);			
 			pPig.addEventListener(EventViewPig.REMOVE_PIG,_handlerPigRemove);
 			addChild(pPig);
 		}

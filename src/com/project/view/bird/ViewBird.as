@@ -149,7 +149,7 @@ package com.project.view.bird{
 				_birdMove();
 			}
 			if(_isFlying){
-				body.gravMass+=0.5;
+				body.gravMass+=0.15;
 				
 				if(body.velocity.x>-.1&&body.velocity.x<.1 && body.velocity.y>-.1&&body.velocity.y<.1){
 					body.gravMass=0;
