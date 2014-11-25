@@ -1,15 +1,14 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view.initNape{
 	
 	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
+	import nape.geom.Vec2;
+	import nape.space.Broadphase;
+	import nape.space.Space;
+	import nape.util.BitmapDebug;
 	
-	public class Main extends Sprite{
-		
+	public class NapeInit extends Sprite{
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
@@ -22,8 +21,15 @@ package{
 		// PRIVATE & PROTECTED VARIABLES
 		//
 		//---------------------------------------------------------------------------------------------------------
+		private var _space:Space;
+		private var _timeStep:Number = 0;
+		private var _velocityIterations:int = 0;
+		private var _positionIterations:int = 0;
 		
-		private var _viewProject:ViewProject;
+		private var _appWidth:int = 0;
+		private var _appHeight:int = 0;
+		
+		private var _debug:BitmapDebug;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,36 +37,48 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+		public function NapeInit(appWidth:int = 800, appHeight:int = 600, timeStep:Number = 30, iterations:int = 10){
+			_appWidth = appWidth;
+			_appHeight = appHeight;
+			_timeStep = 1/timeStep;
+			_velocityIterations = _positionIterations = iterations;	
 			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+			 _init();
 		}
-		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL METHODS 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
-		
+		public function clear():void{_space.clear();}
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  GETTERS & SETTERS   
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
+		public function get space():Space{return _space;}
+		public function get debug():BitmapDebug{return _debug;}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
+		private function _init(event:Event = null):void{
+			removeEventListener(Event.ADDED_TO_STAGE, _init);
+			
+			_space = new Space(new Vec2(0, 400), Broadphase.SWEEP_AND_PRUNE);
+			
+			//_initDebugDraw();
+			
+			addEventListener(Event.ENTER_FRAME, _handlerEnterFrame)
+		}
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
+		private function _initDebugDraw():void{
+			_debug = new BitmapDebug(_appWidth, _appHeight, 0xdddddd);
+			_debug.drawCollisionArbiters = true;
+			_debug.drawConstraints=true;
+			addChild(_debug.display);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -68,12 +86,15 @@ package{
 		//  EVENT HANDLERS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
+		private function _handlerEnterFrame(event:Event):void
+		{
+			_space.step(_timeStep, _velocityIterations, _positionIterations);
 			
-			_initialize();
+			/*_debug.clear();
+			_debug.draw(_space);
+			_debug.flush();*/
 		}
+		
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -87,6 +108,8 @@ package{
 		//  END CLASS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
+		
+		
 		
 	}
 }

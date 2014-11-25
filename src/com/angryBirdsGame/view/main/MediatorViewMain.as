@@ -1,14 +1,8 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view.main{
+	import com.angryBirdsGame.model.EventModel;
+	import com.angryBirdsGame.view.abstract.MediatorViewAbstract;
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
-	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
+	public class MediatorViewMain extends MediatorViewAbstract{
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -23,7 +17,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private var _viewProject:ViewProject;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,11 +24,8 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+		public function MediatorViewMain(){
+			super();
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -44,6 +34,24 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		override public function onRegister():void {
+			super.onRegister();
+			addViewListener(EventViewMain.LOAD_MAP_DATA,_handlerLoadMap);
+			addContextListener(EventModel.MAP_LOADED,_handlerDataLoaded);
+			addContextListener(EventModel.PIGS_LOADED,_handlerDataLoaded);
+			addContextListener(EventModel.BIRDS_LOADED,_handlerDataLoaded);
+			
+			
+		}
+		
+		
+		override public function onRemove():void {
+			super.onRemove();
+			removeViewListener(EventViewMain.LOAD_MAP_DATA,_handlerLoadMap);
+			removeContextListener(EventModel.MAP_LOADED,_handlerDataLoaded);
+			removeContextListener(EventModel.PIGS_LOADED,_handlerDataLoaded);
+			removeContextListener(EventModel.BIRDS_LOADED,_handlerDataLoaded);
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -51,6 +59,9 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		private function get _view():ViewMain {
+			return ViewMain(viewComponent); 
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -58,21 +69,28 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  EVENT HANDLERS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
+		private function _handlerDataLoaded(event:EventModel):void{
+			switch(event.type){
+				case EventModel.MAP_LOADED:
+					_view.mapCreate(event.payload as Array);
+					break;
+				case EventModel.PIGS_LOADED:
+					_view.pigsCreate(event.payload as Array);
+					break;
+				case EventModel.BIRDS_LOADED:
+					_view.birdsCreate(event.payload as Array);
+					break;
+			}
 			
-			_initialize();
+		}
+		private function _handlerLoadMap(event:EventViewMain):void{
+			dispatch(new EventViewMain(EventViewMain.LOAD_MAP_DATA));
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 

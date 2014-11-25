@@ -1,14 +1,9 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view.abstract{
+	import com.angryBirdsGame.model.vo.VOBirdData;
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+	import org.robotlegs.mvcs.Mediator;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
+	public class MediatorViewAbstract extends Mediator{
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -23,7 +18,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private var _viewProject:ViewProject;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,11 +25,8 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+		public function MediatorViewAbstract(){
+			super();
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -44,6 +35,20 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		override public function onRegister():void {
+			super.onRegister();
+			
+			//requestfullfild
+			//dispatch(new EventViewAbstract(EventViewAbstract.SET_DATA, null, setSomeData));
+			
+			
+		}
+		
+		
+		override public function onRemove():void {
+			super.onRemove();
+			
+		}	
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -51,6 +56,9 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		private function get _view():ViewAbstract {
+			return ViewAbstract(viewComponent); 
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -58,22 +66,13 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
-		
+				
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  EVENT HANDLERS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 

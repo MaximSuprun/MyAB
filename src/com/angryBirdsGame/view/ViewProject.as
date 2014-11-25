@@ -1,14 +1,11 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view{
+	import com.angryBirdsGame.ContextRobotlegs;
+	import com.angryBirdsGame.view.main.ViewMain;
 	
 	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
+	public class ViewProject extends Sprite{
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -16,6 +13,7 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		private var _viewMain:ViewMain;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -23,7 +21,7 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private var _viewProject:ViewProject;
+		private var _contextRobotlegs:ContextRobotlegs;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,9 +29,10 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+		public function ViewProject(){
+			super();
+			
+			_contextRobotlegs = new ContextRobotlegs(this);
 			
 			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
 		}
@@ -59,8 +58,8 @@ package{
 		//---------------------------------------------------------------------------------------------------------
 		
 		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
+			_viewMain = new ViewMain();
+			addChild(_viewMain);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 

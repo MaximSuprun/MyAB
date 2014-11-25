@@ -1,15 +1,14 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view.pig{
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+	import com.angryBirdsGame.model.vo.VOPigData;
+	import com.angryBirdsGame.view.abstract.ViewAbstract;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
+	import nape.phys.Body;
+	import nape.phys.BodyType;
+	import nape.phys.Material;
+	import nape.shape.Circle;
 	
-	public class Main extends Sprite{
-		
+	public class ViewPig extends ViewAbstract{
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
@@ -22,20 +21,18 @@ package{
 		// PRIVATE & PROTECTED VARIABLES
 		//
 		//---------------------------------------------------------------------------------------------------------
-		
-		private var _viewProject:ViewProject;
-		
+		private var _damage:Number;
+		private var _health:Number=0;
+		private var _pigRadius:Number;
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		//  CONSTRUCTOR 
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+		public function ViewPig()
+		{
+			super();
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -43,7 +40,11 @@ package{
 		//  PUBLIC & INTERNAL METHODS 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
+		public function set radius(pRadius:Number):void{
+			if(pRadius&&_pigRadius!=pRadius){
+				_pigRadius=pRadius;
+			}
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -57,23 +58,43 @@ package{
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
-		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
+		public function pigBodyCreate(pVOPig:VOPigData):void{
+			_pigRadius=pVOPig.radius;	
+			_health=pVOPig.health;
+			type=pVOPig.type;
+			
+			material=new Material(0,pVOPig.friction,2,pVOPig.density);
+			
+			shape=new Circle(_pigRadius,null,material);
+			
+			body = new Body(BodyType.DYNAMIC);
+			startPoint=pVOPig.position;
+			body.shapes.add(shape);
+			
+			skin=new PigSkin();
+			skin.width=_pigRadius*2;
+			skin.height=_pigRadius*2;
+			skinSetUP();
+			addChild(skin);
+			body.space=pVOPig.space;
+			body.userData.damage=setDamage;
+			
 		}
 		
+		private function setDamage(pDamage:Number):void{
+			_health-=pDamage;
+			if(_health<=0){
+				clear();				
+				dispatchEvent(new EventViewPig(EventViewPig.REMOVE_PIG));
+			}
+		}
+	
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  EVENT HANDLERS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -87,6 +108,8 @@ package{
 		//  END CLASS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
+		
+		
 		
 	}
 }

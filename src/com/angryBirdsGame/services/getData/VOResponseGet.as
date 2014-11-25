@@ -1,43 +1,28 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.services.getData{
+	import com.angryBirdsGame.model.vo.VOBirdData;
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
-		
+	public class VOResponseGet {		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		// PRIVATE & PROTECTED VARIABLES
 		//
 		//---------------------------------------------------------------------------------------------------------
-		
-		private var _viewProject:ViewProject;
-		
+		private var _voData:VOBirdData = new VOBirdData();
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		//  CONSTRUCTOR 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+		public function VOResponseGet() {
 			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
 		}
-		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL METHODS 
@@ -51,6 +36,11 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		public function get voData():VOBirdData{return _voData;}
+		public function set voData(value:VOBirdData):void{
+			_voData = value;
+		}
+
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -58,22 +48,11 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
-		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  EVENT HANDLERS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -86,7 +65,8 @@ package{
 		// 
 		//  END CLASS  
 		// 
-		//---------------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------------------------- 
+
 		
 	}
 }

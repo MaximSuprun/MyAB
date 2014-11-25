@@ -1,14 +1,18 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame{
+	import com.angryBirdsGame.controller.CommandLoadMapData;
+	import com.angryBirdsGame.model.IModel;
+	import com.angryBirdsGame.model.Model;
+	import com.angryBirdsGame.view.abstract.MediatorViewAbstract;
+	import com.angryBirdsGame.view.abstract.ViewAbstract;
+	import com.angryBirdsGame.view.main.EventViewMain;
+	import com.angryBirdsGame.view.main.MediatorViewMain;
+	import com.angryBirdsGame.view.main.ViewMain;
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+	import flash.display.DisplayObjectContainer;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
+	import org.robotlegs.mvcs.Context;
 	
-	public class Main extends Sprite{
+	public class ContextRobotlegs extends Context{
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -23,7 +27,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private var _viewProject:ViewProject;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,11 +34,8 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+		public function ContextRobotlegs(contextView:DisplayObjectContainer=null, autoStartup:Boolean=true){
+			super(contextView, autoStartup);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -44,6 +44,20 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
+		override public function startup():void{
+			
+			// service & model				
+			injector.mapSingletonOf(IModel, Model);
+			
+			// map View			
+			mediatorMap.mapView(ViewAbstract, MediatorViewAbstract);
+			mediatorMap.mapView(ViewMain, MediatorViewMain);
+			
+			// Command
+			commandMap.mapEvent(EventViewMain.LOAD_MAP_DATA, CommandLoadMapData, EventViewMain);
+					
+			super.startup();
+		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -58,10 +72,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -69,11 +79,6 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 

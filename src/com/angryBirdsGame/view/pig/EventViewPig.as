@@ -1,21 +1,14 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view.pig{
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+	import com.angryBirdsGame.view.abstract.EventViewAbstract;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
-		
+	public class EventViewPig extends EventViewAbstract{
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
+		public static const REMOVE_PIG:String="REMOVE_PIG";
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -23,7 +16,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private var _viewProject:ViewProject;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,11 +23,9 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+		public function EventViewPig(type:String, pPayload:Object=null, pFunctionCallback:Function=null)
+		{
+			super(type, pPayload, pFunctionCallback);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -58,10 +48,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -69,11 +55,6 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -87,6 +68,8 @@ package{
 		//  END CLASS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
+		
+		
 		
 	}
 }

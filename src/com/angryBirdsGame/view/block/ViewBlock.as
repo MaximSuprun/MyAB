@@ -1,15 +1,21 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.view.block{
 	
+	import com.angryBirdsGame.common.Constants;
+	import com.angryBirdsGame.model.vo.VOBlockData;
+	import com.angryBirdsGame.view.abstract.ViewAbstract;
+	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
+	import nape.geom.Vec2;
+	import nape.phys.Body;
+	import nape.phys.BodyType;
+	import nape.phys.Material;
+	import nape.shape.Polygon;
 	
-	public class Main extends Sprite{
-		
+	public class ViewBlock extends ViewAbstract{
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
@@ -22,8 +28,11 @@ package{
 		// PRIVATE & PROTECTED VARIABLES
 		//
 		//---------------------------------------------------------------------------------------------------------
+		private var _damage:Number;
+		private var _health:Number=1000;
+		private var _height:Number;
+		private var _width:Number;
 		
-		private var _viewProject:ViewProject;
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,13 +40,11 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+		public function ViewBlock()
+		{
+			super();
 			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
 		}
-		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL METHODS 
@@ -57,10 +64,59 @@ package{
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
+		public function createObject(pVOBlock:VOBlockData):void{			
+			_health=pVOBlock.health;
+			type=pVOBlock.type;
+			
+			material=new Material(0,pVOBlock.friction,2,pVOBlock.density);			
+			shape=new Polygon(Polygon.box(pVOBlock.width,pVOBlock.height),material);
+			
+			body = new Body(BodyType.DYNAMIC);
+			startPoint=pVOBlock.position;
+			body.shapes.add(shape);		
+			body.userData.damage=setDamage;
+			
+			switch (pVOBlock.skin){
+				case VOBlockData.STONE:
+					skin=new StoneSkin();
+						break;
+				case VOBlockData.STONE_PLANK:
+					skin=new StonePlankSkin();				
+					break;
+				case VOBlockData.WOOD:
+					skin=new BoxSkin();								
+					break;
+				case VOBlockData.WOOD_PLANK:
+					skin=new PlankSkin();														
+					break;
+			}	
+			
+			if (pVOBlock.width>pVOBlock.height){
+				skin.rotation=180;
+			}
+			
+			skin.width=pVOBlock.width;
+			skin.height=pVOBlock.height;
+			skinSetUP();
+			addChild(skin);
+			
+			body.space=pVOBlock.space;
+		}
+
+		private function setDamage(pDamage:Number):void{
+			_health-=pDamage;
+			if(_health<=0){
+				clear();	
+				dispatchEvent(new EventViewBlocks(EventViewBlocks.REMOVE_BLOCK));
+			}
+		}
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
+		private function _skinCreate():DisplayObject{
+			var pSprite:Sprite=new Sprite();
+			pSprite.graphics.beginFill(Math.random()*(0xffffff));
+			pSprite.graphics.drawRect(-_width/2,-_height/2,_width,_height);
+			pSprite.graphics.endFill();
+			return pSprite;
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -69,11 +125,6 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -87,6 +138,8 @@ package{
 		//  END CLASS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
+		
+		
 		
 	}
 }

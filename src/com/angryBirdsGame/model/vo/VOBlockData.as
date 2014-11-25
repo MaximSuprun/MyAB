@@ -1,29 +1,28 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.model.vo{
+	import flash.display.DisplayObject;
+	import flash.geom.Point;
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+	import nape.space.Space;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
-		
+	public class VOBlockData  extends VOAbstract{
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
 		// 
 		//---------------------------------------------------------------------------------------------------------
-		
+		public static const WOOD:String="WOOD";
+		public static const STONE:String="STONE";
+		public static const WOOD_PLANK:String="WOOD_PLANK";
+		public static const STONE_PLANK:String="STONE_PLANK";
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		// PRIVATE & PROTECTED VARIABLES
 		//
 		//---------------------------------------------------------------------------------------------------------
-		
-		private var _viewProject:ViewProject;
+		private var _width:Number;
+		private var _height:Number;
+		private var _skin:String="";
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		//
@@ -31,11 +30,8 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+		public function VOBlockData(){
 			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -50,6 +46,33 @@ package{
 		//  GETTERS & SETTERS   
 		// 
 		//---------------------------------------------------------------------------------------------------------
+		public function get width():Number{return _width;}
+		public function set width(value:Number):void{
+			_width = value;
+		}
+		
+		public function get height():Number{return _height;}
+		public function set height(value:Number):void{
+			_height = value;
+		}
+		
+		public function get skin():String{return _skin;}
+		public function set skin(value:String):void{
+			switch (value){
+				case "stone":
+					_skin=STONE;
+					break;
+				case "stone_plank":
+					_skin=STONE_PLANK;					
+					break;
+				case "wood":
+					_skin=WOOD;										
+					break;
+				case "wood_plank":
+					_skin=WOOD_PLANK;															
+					break;
+			}			
+		}
 		
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -58,10 +81,6 @@ package{
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -69,11 +88,6 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -87,6 +101,8 @@ package{
 		//  END CLASS  
 		// 
 		//---------------------------------------------------------------------------------------------------------
+		
+		
 		
 	}
 }

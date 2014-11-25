@@ -1,15 +1,10 @@
-package{
-	import com.angryBirdsGame.view.ViewProject;
+package com.angryBirdsGame.model.vo{
+	import flash.geom.Point;
+	import flash.net.drm.AddToDeviceGroupSetting;
 	
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
+	import nape.space.Space;
 	
-	[SWF(width="640",height="480",frameRate="30",backgroundColor="#666666")]
-	
-	public class Main extends Sprite{
-		
+	public class VOAbstract{
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
 		//  PUBLIC & INTERNAL VARIABLES 
@@ -22,20 +17,20 @@ package{
 		// PRIVATE & PROTECTED VARIABLES
 		//
 		//---------------------------------------------------------------------------------------------------------
-		
-		private var _viewProject:ViewProject;
-		
+		private var _friction:Number;
+		private var _density:Number;
+		private var _health:Number;
+		private var _position:Point;
+		private var _type:String;
+		private var _space:Space;
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		//  CONSTRUCTOR 
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		public function Main(){
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
-			addEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false, 0, true);
+		public function VOAbstract()
+		{
 		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
@@ -50,18 +45,42 @@ package{
 		//  GETTERS & SETTERS   
 		// 
 		//---------------------------------------------------------------------------------------------------------
+
+		public function get health():Number{return _health;}
+		public function set health(value:Number):void{
+			_health = value;
+		}
+
+		public function get position():Point{	return _position;}		
+		public function set position(value:Point):void{
+			_position = value;
+		}
 		
+		public function get density():Number{return _density;}		
+		public function set density(value:Number):void{
+			_density = value;
+		}		
 		
+		public function get friction():Number{return _friction;}		
+		public function set friction(value:Number):void{
+			_friction = value;
+		}
+
+		public function get space():Space{return _space;}
+		public function set space(value:Space):void{
+			_space = value;
+		}
+		
+		public function set type(pType:String):void{_type=pType;}
+		public function get type():String{
+			return _type;
+		}
 		//--------------------------------------------------------------------------------------------------------- 
 		//
 		// PRIVATE & PROTECTED METHODS 
 		//
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _initialize():void{
-			_viewProject = new ViewProject();
-			addChild(_viewProject);
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
@@ -69,11 +88,6 @@ package{
 		// 
 		//---------------------------------------------------------------------------------------------------------
 		
-		private function _handlerAddedToStage(event:Event):void{
-			removeEventListener(Event.ADDED_TO_STAGE, _handlerAddedToStage, false);
-			
-			_initialize();
-		}
 		
 		//--------------------------------------------------------------------------------------------------------- 
 		// 
